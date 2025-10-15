@@ -1,0 +1,172 @@
+body {
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    margin: 0;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.container.narrow {
+    max-width: 520px;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.top-bar h2 {
+    margin: 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    margin-right: 8px;
+    border-radius: 4px;
+    background-color: #1976d2;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #125a9c;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #565e64;
+}
+
+.btn-link {
+    background: none;
+    color: #1976d2;
+    padding: 0;
+    margin: 0 4px;
+}
+
+.btn-link.danger {
+    color: #c62828;
+}
+
+.btn-primary {
+    background-color: #28a745;
+}
+
+.btn-primary:hover {
+    background-color: #1e7e34;
+}
+
+.table-actions {
+    display: flex;
+    gap: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+table th, table td {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    text-align: left;
+}
+
+table thead {
+    background: #f0f2f5;
+}
+
+.filter {
+    background: #f9fafc;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.filter-row label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.inline {
+    display: inline;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 8px;
+    border: 1px solid #d0d5dd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-actions {
+    margin-top: 20px;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.alert-error {
+    background-color: #fdecea;
+    color: #c62828;
+    border: 1px solid #f5c2c0;
+}
+
+.pagination {
+    margin-top: 16px;
+}
+
+.page-link {
+    margin-right: 6px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #1976d2;
+    background: #e3f2fd;
+}
+
+.page-link.active {
+    background: #1976d2;
+    color: #fff;
+}
