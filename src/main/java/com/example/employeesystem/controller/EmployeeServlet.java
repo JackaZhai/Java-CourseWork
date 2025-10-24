@@ -18,11 +18,15 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @WebServlet(name = "EmployeeServlet", urlPatterns = "/employees")
 public class EmployeeServlet extends HttpServlet {
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final String JOB_CATEGORY = "JOB";
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^1[3-9]\\\d{9}$");
+    private static final int MIN_AGE = 18;
+    private static final int MAX_AGE = 65;
 
     private final EmployeeService employeeService = new EmployeeService();
     private final OptionItemService optionItemService = new OptionItemService();
@@ -105,16 +109,33 @@ public class EmployeeServlet extends HttpServlet {
         Employee employee = new Employee();
         employee.setId(id);
         employee.setEmployeeCode(req.getParameter("employeeCode"));
-        employee.setName(req.getParameter("name"));
-        employee.setAge(parseInt(req.getParameter("age"), 0));
-        employee.setGender(req.getParameter("gender"));
-        employee.setPhone(req.getParameter("phone"));
-        employee.setJobOptionId(req.getParameter("jobOptionId"));
+        employee.setName(trim(req.getParameter("name")));
+        employee.setGender(trim(req.getParameter("gender")));
+        employee.setPhone(trim(req.getParameter("phone")));
+        employee.setJobOptionId(trim(req.getParameter("jobOptionId")));
         employee.setHireDate(parseYearMonth(req.getParameter("hireDate")));
         employee.setSalary(parseBigDecimal(req.getParameter("salary")));
 
+        Integer age = parseInteger(req.getParameter("age"));
+        employee.setAge(age);
+
         if (employee.getEmployeeCode() == null || employee.getEmployeeCode().isEmpty()) {
             req.setAttribute("error", "请先生成员工编号");
+            showForm(req, resp, employee);
+            return;
+        }
+        if (employee.getName() == null || employee.getName().isEmpty()) {
+            req.setAttribute("error", "姓名不能为空");
+            showForm(req, resp, employee);
+            return;
+        }
+        if (employee.getGender() == null || employee.getGender().isEmpty()) {
+            req.setAttribute("error", "请选择性别");
+            showForm(req, resp, employee);
+            return;
+        }
+        if (employee.getJobOptionId() == null || employee.getJobOptionId().isEmpty()) {
+            req.setAttribute("error", "请选择岗位");
             showForm(req, resp, employee);
             return;
         }
@@ -123,13 +144,33 @@ public class EmployeeServlet extends HttpServlet {
             showForm(req, resp, employee);
             return;
         }
-        if (employee.getAge() == null || employee.getAge() <= 0) {
+        if (age == null) {
             req.setAttribute("error", "请输入合法的年龄");
+            showForm(req, resp, employee);
+            return;
+        }
+        if (age < MIN_AGE || age > MAX_AGE) {
+            req.setAttribute("error", "年龄需在" + MIN_AGE + "至" + MAX_AGE + "岁之间");
+            showForm(req, resp, employee);
+            return;
+        }
+        if (employee.getPhone() == null || employee.getPhone().isEmpty()) {
+            req.setAttribute("error", "手机号不能为空");
+            showForm(req, resp, employee);
+            return;
+        }
+        if (!PHONE_PATTERN.matcher(employee.getPhone()).matches()) {
+            req.setAttribute("error", "请输入合法的手机号");
             showForm(req, resp, employee);
             return;
         }
         if (employee.getSalary() == null) {
             req.setAttribute("error", "请输入薪资");
+            showForm(req, resp, employee);
+            return;
+        }
+        if (employee.getSalary().compareTo(BigDecimal.ZERO) < 0) {
+            req.setAttribute("error", "薪资不能为负数");
             showForm(req, resp, employee);
             return;
         }
@@ -187,6 +228,17 @@ public class EmployeeServlet extends HttpServlet {
         }
     }
 
+    private Integer parseInteger(String value) {
+        try {
+            if (value == null || value.trim().isEmpty()) {
+                return null;
+            }
+            return Integer.valueOf(value);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     private LocalDate parseYearMonth(String value) {
         if (value == null || value.isEmpty()) {
             return null;
@@ -197,5 +249,9 @@ public class EmployeeServlet extends HttpServlet {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private String trim(String value) {
+        return value == null ? null : value.trim();
     }
 }
