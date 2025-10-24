@@ -12,6 +12,20 @@
   - 员工编号根据“岗位编号 + 入职年份 + 四位序号”自动生成，不可重复且界面不可编辑。
 - 选项管理：维护岗位等基础选项数据，支持分页、条件查询与增删改。
 
+## 需求对照检查
+
+| 需求点 | 实现说明 |
+| ------ | -------- |
+| 管理员登录、Filter 鉴权 | `LoginServlet` 负责登录，`AuthFilter` 拦截除登录/静态资源外的所有请求，未登录将被重定向。 |
+| JDBC + Servlet 技术栈 | 控制层全部使用标准 `HttpServlet`；数据访问使用 `BaseDao` + `ConnectionManager` 直连 JDBC。 |
+| ResultSet ORM 映射 | `ResultSetMapper` 结合 `@Column` 注解完成 `ResultSet` 到实体的映射。 |
+| 员工信息增删改查 | `EmployeeServlet` + `employee-list.jsp`/`employee-form.jsp` 提供列表、分页、条件查询、新增、编辑、删除。 |
+| 员工编号生成规则 | `EmployeeService#generateEmployeeCode` 基于岗位选项值与入职年份生成“岗位编号 + 年份 + 序号”，前端在选择岗位、入职年月后自动获取。 |
+| 表单验证 | 页面输入设置必填/格式限制，并在 `EmployeeServlet` 中进行姓名、性别、岗位、手机号、年龄、薪资等服务器端校验。 |
+| 服务端分页 | `EmployeeDao#search`、`OptionItemDao#search` 使用 `LIMIT ... OFFSET` 和总数查询，仅返回当前页 10 条数据。 |
+| 组合查询 | 员工查询支持姓名、手机号、性别、岗位以及入职时间、薪资区间；选项查询支持名称、范畴组合条件。 |
+| 选项表管理 | `OptionItemServlet` + 对应 JSP 实现分页列表、新增、编辑、删除。 |
+
 ## 技术实现
 
 - Servlet 4.0 + JSP + JSTL 构建 Web 层。
@@ -37,7 +51,7 @@
    mvn clean package
    ```
 
-4. 将生成的 `employee-management.war` 部署至 Servlet 容器，例如将 WAR 放入 Tomcat 的 `webapps/` 目录后启动 Tomcat。
+4. 将生成的 `employee-management.war` 部署至 Servlet 容器，例如将 WAR 放入 Tomcat 的 `webapps/` 目录后启动 Tomcat。更完整的部署说明请参考 `docs/tomcat.md`。
    - 如需自定义上下文路径，可在 `conf/server.xml` 中配置 `<Context path="/employee-management" docBase="/path/to/employee-management.war" />`，或在 `conf/Catalina/localhost/` 下创建相应的 XML。
    - 如果使用 Tomcat 10+，请确保启用了 Jakarta EE 9 兼容模式或改用 Tomcat 9，以避免包名差异导致的 Servlet 加载错误。
 5. 启动 Tomcat 后访问 `http://localhost:8080/employee-management/login`，使用初始化账号登录系统。
@@ -68,9 +82,9 @@ src/main/java
 ## 前端界面
 
 - 本项目使用 JSP + JSTL 构建界面。部署 WAR 后即可通过浏览器访问以下页面：
-  - `/login`：管理员登录页。
-  - `/employee/list`：员工列表，支持分页与组合查询，可跳转至新增、编辑、查看页面。
-  - `/option/list`：选项管理页，用于维护岗位等基础数据。
+- `/login`：管理员登录页。
+- `/employees`：员工列表，支持分页与组合查询，可跳转至新增、编辑页面。
+- `/options`：选项管理页，用于维护岗位等基础数据。
 - 页面静态资源位于 `src/main/webapp/static/` 目录（包含 CSS 与 JavaScript），可根据需求自行调整样式与交互。
 
 ## Tomcat 部署补充说明
