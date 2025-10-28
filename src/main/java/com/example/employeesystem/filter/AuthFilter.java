@@ -17,12 +17,14 @@ public class AuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String path = request.getRequestURI().substring(request.getContextPath().length());
 
+        // 登录页与静态资源无需校验会话
         if (path.startsWith("/login") || path.startsWith("/static/") || "/".equals(path)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
 
         HttpSession session = request.getSession(false);
+        // 未登录用户跳转到登录页
         if (session == null || session.getAttribute("currentUser") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;

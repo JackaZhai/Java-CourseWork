@@ -18,6 +18,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 直接转发至登录页面
         req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
     }
 
@@ -26,6 +27,7 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
+        // 校验账号密码
         Optional<Account> accountOptional = authService.authenticate(username, password);
         if (!accountOptional.isPresent()) {
             req.setAttribute("error", "账号或密码错误");
@@ -33,6 +35,7 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
+        // 登录成功后写入会话并跳转至员工列表
         HttpSession session = req.getSession(true);
         session.setAttribute("currentUser", accountOptional.get());
         resp.sendRedirect(req.getContextPath() + "/employees");

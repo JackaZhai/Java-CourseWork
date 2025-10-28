@@ -4,6 +4,9 @@ import com.example.employeesystem.annotation.Column;
 
 import java.time.LocalDateTime;
 
+/**
+ * 管理员账号实体，对应 account 表。
+ */
 public class Account {
     @Column("id")
     private String id;

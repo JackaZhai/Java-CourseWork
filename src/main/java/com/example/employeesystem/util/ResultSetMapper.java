@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Maps JDBC {@link ResultSet} rows to strongly typed objects using reflection and annotations.
+ * 使用反射与 {@link Column} 注解将 JDBC {@link ResultSet} 转换为实体对象的工具类。
  */
 public final class ResultSetMapper {
 
@@ -27,6 +27,7 @@ public final class ResultSetMapper {
     }
 
     public static <T> List<T> map(ResultSet resultSet, Class<T> targetType) throws SQLException {
+        // 预先记录列名与索引的对应关系，减少循环内查找成本
         List<T> results = new ArrayList<>();
         ResultSetMetaData metaData = resultSet.getMetaData();
         Map<String, Integer> columnIndexMap = new HashMap<>();
@@ -49,6 +50,7 @@ public final class ResultSetMapper {
                     if (columnIndex == null) {
                         continue;
                     }
+                    // 根据字段类型读取并转换 ResultSet 中的值
                     Object value = readValue(resultSet, columnIndex, field.getType());
                     if (value != null) {
                         field.setAccessible(true);
@@ -69,6 +71,7 @@ public final class ResultSetMapper {
         if (column != null) {
             return column.value();
         }
+        // 默认使用字段名作为列名
         return field.getName();
     }
 
@@ -80,6 +83,7 @@ public final class ResultSetMapper {
         if (targetType.isAssignableFrom(raw.getClass())) {
             return raw;
         }
+        // 针对常见日期、数字类型做兼容转换
         if (targetType == LocalDateTime.class) {
             if (raw instanceof Timestamp) {
                 return ((Timestamp) raw).toLocalDateTime();

@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/**
+ * 员工业务相关的服务层，封装校验以外的数据库访问操作。
+ */
 public class EmployeeService {
     private final EmployeeDao employeeDao = new EmployeeDao();
     private final OptionItemDao optionItemDao = new OptionItemDao();
@@ -27,6 +30,7 @@ public class EmployeeService {
 
     public void create(Employee employee) {
         employee.setId(IdGenerator.uuid());
+        // 新增时生成主键后直接持久化
         employeeDao.insert(employee);
     }
 
@@ -42,10 +46,12 @@ public class EmployeeService {
         if (jobOptionId == null || jobOptionId.isEmpty() || hireDate == null) {
             throw new IllegalArgumentException("Job option and hire date are required for code generation");
         }
+        // 查询岗位配置，获取岗位编号前缀
         OptionItem option = optionItemDao.findById(jobOptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Job option not found"));
         String jobCode = option.getValue();
         String prefix = jobCode + hireDate.getYear();
+        // 找出已有的最大编号，用于生成连续序号
         String lastCode = employeeDao.findMaxCodeLike(prefix);
         return IdGenerator.employeeCode(jobCode, hireDate, lastCode);
     }

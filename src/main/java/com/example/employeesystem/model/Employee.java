@@ -5,6 +5,9 @@ import com.example.employeesystem.annotation.Column;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * 员工实体，对应 employee 表以及关联的岗位名称。
+ */
 public class Employee {
     @Column("id")
     private String id;

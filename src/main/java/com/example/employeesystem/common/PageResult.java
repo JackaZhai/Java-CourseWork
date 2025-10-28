@@ -2,6 +2,9 @@ package com.example.employeesystem.common;
 
 import java.util.List;
 
+/**
+ * 封装分页查询结果，包含数据集合及分页元信息。
+ */
 public class PageResult<T> {
     private List<T> records;
     private long total;
@@ -32,6 +35,7 @@ public class PageResult<T> {
     }
 
     public long getTotalPages() {
+        // 通过向上取整的方式计算总页数
         return (total + size - 1) / size;
     }
 }

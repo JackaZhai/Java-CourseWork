@@ -14,16 +14,19 @@ import java.util.Optional;
 public class OptionItemDao extends BaseDao {
 
     public void insert(OptionItem option) {
+        // 新增选项记录
         String sql = "INSERT INTO option_item (id, name, category, value, remark) VALUES (?, ?, ?, ?, ?)";
         executeUpdate(sql, option.getId(), option.getName(), option.getCategory(), option.getValue(), option.getRemark());
     }
 
     public void update(OptionItem option) {
+        // 修改选项信息
         String sql = "UPDATE option_item SET name = ?, category = ?, value = ?, remark = ? WHERE id = ?";
         executeUpdate(sql, option.getName(), option.getCategory(), option.getValue(), option.getRemark(), option.getId());
     }
 
     public void delete(String id) {
+        // 删除选项
         executeUpdate("DELETE FROM option_item WHERE id = ?", id);
     }
 
@@ -33,6 +36,7 @@ public class OptionItemDao extends BaseDao {
     }
 
     public PageResult<OptionItem> search(String name, String category, int page, int size) {
+        // 依据名称与分类构造查询条件
         StringBuilder baseSql = new StringBuilder(" FROM option_item WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
         if (name != null && !name.isEmpty()) {
@@ -54,16 +58,19 @@ public class OptionItemDao extends BaseDao {
         queryParams.add(size);
         queryParams.add((page - 1) * size);
 
+        // 查询并封装分页结果
         List<OptionItem> records = executeQuery(querySql.toString(), OptionItem.class, queryParams.toArray());
         return new PageResult<>(records, total, page, size);
     }
 
     public List<OptionItem> findByCategory(String category) {
+        // 查询指定分类下的所有选项
         String sql = "SELECT id, name, category, value, remark FROM option_item WHERE category = ? ORDER BY name";
         return executeQuery(sql, OptionItem.class, category);
     }
 
     private long count(String baseSql, List<Object> params) {
+        // 统计符合条件的选项数量
         String sql = "SELECT COUNT(1)" + baseSql;
         try (Connection connection = com.example.employeesystem.util.ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
