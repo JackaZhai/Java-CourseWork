@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * 选项管理页面的 Servlet，支持列表、表单以及删除操作。
+ */
 @WebServlet(name = "OptionItemServlet", urlPatterns = "/options")
 public class OptionItemServlet extends HttpServlet {
     private static final int DEFAULT_PAGE_SIZE = 10;
@@ -21,8 +24,10 @@ public class OptionItemServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if (action == null || action.isEmpty() || "list".equals(action)) {
+            // 默认展示选项列表
             showList(req, resp);
         } else if ("create".equals(action)) {
+            // 打开新增表单
             showForm(req, resp, new OptionItem());
         } else if ("edit".equals(action)) {
             String id = req.getParameter("id");
@@ -31,6 +36,7 @@ public class OptionItemServlet extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
+            // 回显已有数据
             showForm(req, resp, option.get());
         } else {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -41,8 +47,10 @@ public class OptionItemServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if ("save".equals(action)) {
+            // 保存新增或编辑
             handleSave(req, resp);
         } else if ("delete".equals(action)) {
+            // 删除操作
             handleDelete(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -55,6 +63,7 @@ public class OptionItemServlet extends HttpServlet {
         int page = parseInt(req.getParameter("page"), 1);
         int size = parseInt(req.getParameter("size"), DEFAULT_PAGE_SIZE);
 
+        // 分页查询选项数据
         PageResult<OptionItem> pageResult = optionItemService.search(name, category, page, size);
 
         req.setAttribute("pageResult", pageResult);
@@ -79,8 +88,10 @@ public class OptionItemServlet extends HttpServlet {
         option.setRemark(req.getParameter("remark"));
 
         if (option.getId() == null || option.getId().isEmpty()) {
+            // 新增记录
             optionItemService.create(option);
         } else {
+            // 更新已有记录
             optionItemService.update(option);
         }
         resp.sendRedirect(req.getContextPath() + "/options");
@@ -89,6 +100,7 @@ public class OptionItemServlet extends HttpServlet {
     private void handleDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String id = req.getParameter("id");
         if (id != null && !id.isEmpty()) {
+            // 删除指定选项
             optionItemService.delete(id);
         }
         resp.sendRedirect(req.getContextPath() + "/options");

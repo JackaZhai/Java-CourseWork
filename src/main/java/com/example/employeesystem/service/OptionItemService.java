@@ -8,6 +8,9 @@ import com.example.employeesystem.util.IdGenerator;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 选项数据的业务层，负责封装 DAO 调用。
+ */
 public class OptionItemService {
     private final OptionItemDao optionItemDao = new OptionItemDao();
 
@@ -21,6 +24,7 @@ public class OptionItemService {
 
     public void create(OptionItem option) {
         option.setId(IdGenerator.uuid());
+        // 新增选项时生成主键
         optionItemDao.insert(option);
     }
 

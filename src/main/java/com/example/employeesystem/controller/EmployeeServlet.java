@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+/**
+ * 员工模块的主入口 Servlet，负责列表、表单及异步编号生成。
+ */
 @WebServlet(name = "EmployeeServlet", urlPatterns = "/employees")
 public class EmployeeServlet extends HttpServlet {
     private static final int DEFAULT_PAGE_SIZE = 10;
@@ -35,8 +38,10 @@ public class EmployeeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if (action == null || action.isEmpty() || "list".equals(action)) {
+            // 默认展示列表页
             showList(req, resp);
         } else if ("create".equals(action)) {
+            // 进入新增表单
             showForm(req, resp, new Employee());
         } else if ("edit".equals(action)) {
             String id = req.getParameter("id");
@@ -45,8 +50,10 @@ public class EmployeeServlet extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
+            // 回显已有员工数据
             showForm(req, resp, employee.get());
         } else if ("generateCode".equals(action)) {
+            // 处理异步编号请求
             handleGenerateCode(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -57,8 +64,10 @@ public class EmployeeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if ("save".equals(action)) {
+            // 保存新增或编辑
             handleSave(req, resp);
         } else if ("delete".equals(action)) {
+            // 删除记录
             handleDelete(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -78,9 +87,11 @@ public class EmployeeServlet extends HttpServlet {
         int page = parseInt(req.getParameter("page"), 1);
         int size = parseInt(req.getParameter("size"), DEFAULT_PAGE_SIZE);
 
+        // 调用服务层完成分页查询
         PageResult<Employee> pageResult = employeeService.search(name, phone, gender, jobOptionId,
                 hireDateFrom, hireDateTo, salaryMin, salaryMax, page, size);
 
+        // 准备岗位下拉框数据
         List<OptionItem> jobOptions = optionItemService.findByCategory(JOB_CATEGORY);
 
         req.setAttribute("pageResult", pageResult);
@@ -119,6 +130,7 @@ public class EmployeeServlet extends HttpServlet {
         Integer age = parseInteger(req.getParameter("age"));
         employee.setAge(age);
 
+        // 一系列服务器端校验，确保数据合法
         if (employee.getEmployeeCode() == null || employee.getEmployeeCode().isEmpty()) {
             req.setAttribute("error", "请先生成员工编号");
             showForm(req, resp, employee);
@@ -176,8 +188,10 @@ public class EmployeeServlet extends HttpServlet {
         }
 
         if (employee.getId() == null || employee.getId().isEmpty()) {
+            // 创建新员工
             employeeService.create(employee);
         } else {
+            // 更新已有员工
             employeeService.update(employee);
         }
         resp.sendRedirect(req.getContextPath() + "/employees");
@@ -186,6 +200,7 @@ public class EmployeeServlet extends HttpServlet {
     private void handleDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String id = req.getParameter("id");
         if (id != null && !id.isEmpty()) {
+            // 删除指定员工
             employeeService.delete(id);
         }
         resp.sendRedirect(req.getContextPath() + "/employees");
@@ -202,6 +217,7 @@ public class EmployeeServlet extends HttpServlet {
                 writer.write("{\"success\":false,\"message\":\"入职时间无效\"}");
                 return;
             }
+            // 调用服务层生成新编号
             String code = employeeService.generateEmployeeCode(jobOptionId, hireDate);
             writer.write("{\"success\":true,\"code\":\"" + code + "\"}");
         } catch (IllegalArgumentException ex) {

@@ -16,12 +16,14 @@ import java.util.Optional;
 public class EmployeeDao extends BaseDao {
 
     public Optional<Employee> findById(String id) {
+        // 关联岗位选项，查询单个员工的完整信息
         String sql = "SELECT e.id, e.employee_code, e.name, e.age, e.gender, e.phone, e.hire_date, e.job_option_id, e.salary, o.name AS job_name " +
                 "FROM employee e LEFT JOIN option_item o ON e.job_option_id = o.id WHERE e.id = ?";
         return executeSingleResult(sql, Employee.class, id);
     }
 
     public void insert(Employee employee) {
+        // 插入新员工记录
         String sql = "INSERT INTO employee (id, employee_code, name, age, gender, phone, hire_date, job_option_id, salary) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         executeUpdate(sql, employee.getId(), employee.getEmployeeCode(), employee.getName(), employee.getAge(),
@@ -29,18 +31,21 @@ public class EmployeeDao extends BaseDao {
     }
 
     public void update(Employee employee) {
+        // 根据主键更新员工基础信息
         String sql = "UPDATE employee SET name = ?, age = ?, gender = ?, phone = ?, hire_date = ?, job_option_id = ?, salary = ? WHERE id = ?";
         executeUpdate(sql, employee.getName(), employee.getAge(), employee.getGender(), employee.getPhone(),
                 employee.getHireDate(), employee.getJobOptionId(), employee.getSalary(), employee.getId());
     }
 
     public void delete(String id) {
+        // 物理删除员工记录
         executeUpdate("DELETE FROM employee WHERE id = ?", id);
     }
 
     public PageResult<Employee> search(String name, String phone, String gender, String jobOptionId,
                                        LocalDate hireDateFrom, LocalDate hireDateTo, BigDecimal salaryMin,
                                        BigDecimal salaryMax, int page, int size) {
+        // 构造动态 SQL，实现多条件组合查询
         StringBuilder baseSql = new StringBuilder(" FROM employee e LEFT JOIN option_item o ON e.job_option_id = o.id WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
 
@@ -88,11 +93,13 @@ public class EmployeeDao extends BaseDao {
         queryParams.add(size);
         queryParams.add((page - 1) * size);
 
+        // 查询分页数据并封装返回
         List<Employee> records = executeQuery(querySql.toString(), Employee.class, queryParams.toArray());
         return new PageResult<>(records, total, page, size);
     }
 
     private long count(String baseSql, List<Object> params) {
+        // 统计满足条件的总记录数
         String sql = "SELECT COUNT(1)" + baseSql;
         try (Connection connection = com.example.employeesystem.util.ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -111,6 +118,7 @@ public class EmployeeDao extends BaseDao {
     }
 
     public String findMaxCodeLike(String prefix) {
+        // 查询指定前缀下最大的员工编号，用于生成新编号
         String sql = "SELECT MAX(employee_code) AS max_code FROM employee WHERE employee_code LIKE ?";
         try (Connection connection = com.example.employeesystem.util.ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

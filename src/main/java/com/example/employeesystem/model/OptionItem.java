@@ -2,6 +2,9 @@ package com.example.employeesystem.model;
 
 import com.example.employeesystem.annotation.Column;
 
+/**
+ * 基础选项实体，如岗位、学历等字典项。
+ */
 public class OptionItem {
     @Column("id")
     private String id;
