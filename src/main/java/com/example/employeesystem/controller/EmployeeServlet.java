@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class EmployeeServlet extends HttpServlet {
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final String JOB_CATEGORY = "JOB";
-    private static final Pattern PHONE_PATTERN = Pattern.compile("^1[3-9]\\\d{9}$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
     private static final int MIN_AGE = 18;
     private static final int MAX_AGE = 65;
 
