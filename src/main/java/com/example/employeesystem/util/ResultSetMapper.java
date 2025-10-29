@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -93,11 +94,15 @@ public final class ResultSetMapper {
             }
         }
         if (targetType == LocalDate.class) {
-            if (raw instanceof Date) {
-                return ((Date) raw).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (raw instanceof java.sql.Date) {
+                return ((java.sql.Date) raw).toLocalDate();
             }
             if (raw instanceof Timestamp) {
                 return ((Timestamp) raw).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            }
+            if (raw instanceof Date) {
+                Instant instant = Instant.ofEpochMilli(((Date) raw).getTime());
+                return instant.atZone(ZoneId.systemDefault()).toLocalDate();
             }
         }
         if (targetType == Integer.class || targetType == int.class) {
