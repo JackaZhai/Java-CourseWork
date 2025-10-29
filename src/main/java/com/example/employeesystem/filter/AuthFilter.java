@@ -18,7 +18,9 @@ public class AuthFilter implements Filter {
         String path = request.getRequestURI().substring(request.getContextPath().length());
 
         // 登录页与静态资源无需校验会话
-        if (path.startsWith("/login") || path.startsWith("/static/") || "/".equals(path)) {
+        if (path.startsWith("/login") || path.equals("/login.html")
+                || path.equals("/index.html")
+                || path.startsWith("/static/") || "/".equals(path)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -26,9 +28,24 @@ public class AuthFilter implements Filter {
         HttpSession session = request.getSession(false);
         // 未登录用户跳转到登录页
         if (session == null || session.getAttribute("currentUser") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            if (isJsonRequest(request)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"success\":false,\"message\":\"请先登录\"}");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/login.html");
+            }
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    private boolean isJsonRequest(HttpServletRequest request) {
+        String accept = request.getHeader("Accept");
+        if (accept != null && accept.contains("application/json")) {
+            return true;
+        }
+        String requestedWith = request.getHeader("X-Requested-With");
+        return requestedWith != null && "XMLHttpRequest".equalsIgnoreCase(requestedWith);
     }
 }

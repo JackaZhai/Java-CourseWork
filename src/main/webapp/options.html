@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>岗位选项管理</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <h2>岗位选项管理</h2>
+        <div>
+            <a class="btn" href="employees.html">返回员工列表</a>
+            <button class="btn" id="createOptionBtn" type="button">新增选项</button>
+            <button class="btn btn-secondary" id="logoutBtn" type="button">退出</button>
+        </div>
+    </div>
+
+    <div id="optionMessage" class="alert" style="display: none;"></div>
+
+    <form id="optionFilterForm" class="filter">
+        <div class="filter-row">
+            <label>名称：<input type="text" name="name"></label>
+            <label>分类：<input type="text" name="category"></label>
+            <button type="submit" class="btn btn-primary">查询</button>
+            <button type="button" class="btn btn-secondary" id="resetOptionFilters">重置</button>
+        </div>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>分类</th>
+            <th>值</th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="optionTableBody">
+        <tr><td colspan="5" class="text-center">正在加载...</td></tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" id="optionPagination"></div>
+</div>
+
+<div class="modal" id="optionModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="optionModalTitle">新增选项</h3>
+            <button class="modal-close" id="optionModalClose" type="button">×</button>
+        </div>
+        <div id="optionModalMessage" class="alert" style="display: none;"></div>
+        <form id="optionForm">
+            <input type="hidden" id="optionId">
+            <div class="form-group">
+                <label>名称</label>
+                <input type="text" id="optionName" required>
+            </div>
+            <div class="form-group">
+                <label>分类</label>
+                <input type="text" id="optionCategory" required>
+            </div>
+            <div class="form-group">
+                <label>值</label>
+                <input type="text" id="optionValue" required>
+            </div>
+            <div class="form-group">
+                <label>备注</label>
+                <textarea id="optionRemark" rows="3"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-secondary" id="optionCancelBtn">取消</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="static/js/common.js"></script>
+<script src="static/js/options.js"></script>
+</body>
+</html>
