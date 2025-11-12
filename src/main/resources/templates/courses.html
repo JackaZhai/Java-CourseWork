@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::body})">
+<body>
+<h1>我的选课</h1>
+<div class="stats">
+    <div class="card">
+        <h3>已选课程学分</h3>
+        <span th:text="${selectedCredits}"></span>
+    </div>
+    <div class="card">
+        <h3>可选课程学分</h3>
+        <span th:text="${unselectedCredits}"></span>
+    </div>
+</div>
+<h2>已选课程</h2>
+<table class="table">
+    <thead>
+    <tr>
+        <th>课程编号</th>
+        <th>课程名称</th>
+        <th>学分</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="course : ${selectedCourses}">
+        <td th:text="${course.code}"></td>
+        <td>
+            <div th:text="${course.name}"></div>
+            <small th:text="${course.description}"></small>
+        </td>
+        <td th:text="${course.credits}"></td>
+        <td>
+            <form th:action="@{/student/courses/drop}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="hidden" name="courseId" th:value="${course.id}">
+                <button type="submit" class="link-button">退选</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${selectedCourses.isEmpty()}">
+        <td colspan="4">暂无已选课程</td>
+    </tr>
+    </tbody>
+</table>
+<h2>未选课程</h2>
+<table class="table">
+    <thead>
+    <tr>
+        <th>课程编号</th>
+        <th>课程名称</th>
+        <th>学分</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="course : ${unselectedCourses}">
+        <td th:text="${course.code}"></td>
+        <td>
+            <div th:text="${course.name}"></div>
+            <small th:text="${course.description}"></small>
+        </td>
+        <td th:text="${course.credits}"></td>
+        <td>
+            <form th:action="@{/student/courses/enroll}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="hidden" name="courseId" th:value="${course.id}">
+                <button type="submit" class="link-button">选修</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${unselectedCourses.isEmpty()}">
+        <td colspan="4">暂无可选课程</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
