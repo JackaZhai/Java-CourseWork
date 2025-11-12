@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -52,9 +53,22 @@ public class StudentService {
     }
 
     private String generateStudentNumber(Program program, int year) {
-        long count = studentRepository.countByProgramAndYear(program.getId(), year);
-        long sequence = count + 1;
-        return program.getCode() + year + String.format("%03d", sequence);
+        String prefix = program.getCode() + year;
+        return studentRepository.findTopByStudentNumberStartingWithOrderByStudentNumberDesc(prefix)
+                .map(Student::getStudentNumber)
+                .map(existingNumber -> existingNumber.substring(prefix.length()))
+                .filter(sequencePart -> !sequencePart.isEmpty())
+                .map(sequencePart -> {
+                    try {
+                        return Integer.parseInt(sequencePart);
+                    } catch (NumberFormatException ex) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .map(lastSequence -> String.format("%03d", lastSequence + 1))
+                .map(nextSequence -> prefix + nextSequence)
+                .orElse(prefix + String.format("%03d", 1));
     }
 
     public Optional<Student> findByStudentNumber(String studentNumber) {
