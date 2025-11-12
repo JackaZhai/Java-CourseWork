@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">学生选课系统</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:fragment="layout(content)">
+    <header>
+        <div class="logo">学生选课管理系统</div>
+        <nav>
+            <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/student/courses}">选课</a>
+            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/dashboard}">管理控制台</a>
+            <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/student/change-password}">修改密码</a>
+            <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/logout}">退出</a>
+            <a th:if="${!#authorization.expression('isAuthenticated()')}" th:href="@{/login}">登录</a>
+        </nav>
+    </header>
+    <div class="container" th:insert="${content}"></div>
+</div>
+</body>
+</html>

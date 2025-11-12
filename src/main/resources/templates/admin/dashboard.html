@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::body})">
+<body>
+<h1>管理控制台</h1>
+<div class="stats">
+    <div class="card">
+        <h3>专业数量</h3>
+        <span th:text="${programCount}"></span>
+    </div>
+    <div class="card">
+        <h3>课程数量</h3>
+        <span th:text="${courseCount}"></span>
+    </div>
+    <div class="card">
+        <h3>学生数量</h3>
+        <span th:text="${studentCount}"></span>
+    </div>
+</div>
+<div style="margin-top:2rem; display:flex; gap:1rem;">
+    <a class="button-link" th:href="@{/admin/programs}">专业管理</a>
+    <a class="button-link" th:href="@{/admin/courses}">课程管理</a>
+    <a class="button-link" th:href="@{/admin/accounts}">账号管理</a>
+    <a class="button-link" th:href="@{/admin/enrollments}">选课信息查询</a>
+</div>
+</body>
+</html>

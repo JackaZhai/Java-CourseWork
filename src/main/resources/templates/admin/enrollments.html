@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::body})">
+<body>
+<h1>选课信息查询</h1>
+<form method="get" th:action="@{/admin/enrollments}" style="margin-bottom:1.5rem; display:flex; gap:1rem; align-items:flex-end;">
+    <label>关键字（姓名/学号）
+        <input type="text" name="keyword" th:value="${keyword}">
+    </label>
+    <label>专业筛选
+        <select name="programId">
+            <option th:value="" th:selected="${programId == null}">全部</option>
+            <option th:each="program : ${programs}" th:value="${program.id}"
+                    th:selected="${programId == program.id}" th:text="${program.name}"></option>
+        </select>
+    </label>
+    <button type="submit">查询</button>
+</form>
+<table class="table">
+    <thead>
+    <tr>
+        <th>学号</th>
+        <th>姓名</th>
+        <th>专业</th>
+        <th>已选课程</th>
+        <th>已选学分</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="student : ${students}">
+        <td th:text="${student.studentNumber}"></td>
+        <td th:text="${student.name}"></td>
+        <td th:text="${student.program.name}"></td>
+        <td>
+            <ul>
+                <li th:each="enrollment : ${student.enrollments}" th:text="${enrollment.course.name} + '（' + ${enrollment.course.credits} + '学分）'"></li>
+                <li th:if="${student.enrollments.isEmpty()}">暂无课程</li>
+            </ul>
+        </td>
+        <td th:text="${creditTotals[student.id]}"></td>
+    </tr>
+    <tr th:if="${students.isEmpty()}">
+        <td colspan="5">没有符合条件的记录</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

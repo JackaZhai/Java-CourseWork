@@ -1,0 +1,137 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f5f6fa;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    color: #fff;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav a {
+    color: #fff;
+    margin-left: 1rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+form {
+    display: grid;
+    gap: 1rem;
+}
+
+input, select, textarea {
+    padding: 0.8rem;
+    border: 1px solid #dcdde1;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #4e54c8;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #3b40a4;
+}
+
+a.button-link {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    background-color: #4e54c8;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+}
+
+.table th, .table td {
+    border: 1px solid #e1e1e1;
+    padding: 0.8rem;
+    text-align: left;
+}
+
+.table thead {
+    background-color: #f0f2ff;
+}
+
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: #e7f9ef;
+    color: #2d7a46;
+}
+
+.alert-error {
+    background-color: #fdecea;
+    color: #b33a3a;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: #4e54c8;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.card {
+    background: linear-gradient(135deg, #f6f8ff, #ffffff);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.card span {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4e54c8;
+}

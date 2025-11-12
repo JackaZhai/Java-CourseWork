@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::body})">
+<body>
+<h1>专业信息管理</h1>
+<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+<div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+<form th:action="@{/admin/programs}" th:object="${program}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <input type="hidden" th:field="*{id}">
+    <label>专业编号
+        <input type="text" th:field="*{code}">
+        <span th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></span>
+    </label>
+    <label>专业名称
+        <input type="text" th:field="*{name}">
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+    </label>
+    <label>简介
+        <textarea th:field="*{description}" rows="3"></textarea>
+    </label>
+    <button type="submit">保存</button>
+</form>
+<table class="table">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>名称</th>
+        <th>简介</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${programs}">
+        <td th:text="${item.code}"></td>
+        <td th:text="${item.name}"></td>
+        <td th:text="${item.description}"></td>
+        <td class="actions">
+            <a class="button-link" th:href="@{'/admin/programs/edit/' + ${item.id}}">编辑</a>
+            <form th:action="@{'/admin/programs/delete/' + ${item.id}}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="link-button">删除</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${programs.isEmpty()}">
+        <td colspan="4">暂无专业信息</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
