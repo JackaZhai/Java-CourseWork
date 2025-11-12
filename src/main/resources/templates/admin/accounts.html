@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout(~{::body})">
+<body>
+<h1>账号信息管理</h1>
+<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+<form th:action="@{/admin/accounts}" th:object="${account}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <label>账号
+        <input type="text" th:field="*{username}">
+        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+    </label>
+    <label>密码（将自动加密存储）
+        <input type="password" th:field="*{password}">
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+    </label>
+    <label>角色
+        <select th:field="*{role}">
+            <option th:each="role : ${roles}" th:value="${role}" th:text="${role}"></option>
+        </select>
+    </label>
+    <button type="submit">创建账号</button>
+</form>
+<table class="table">
+    <thead>
+    <tr>
+        <th>账号</th>
+        <th>角色</th>
+        <th>是否已改密码</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${accounts}">
+        <td th:text="${item.username}"></td>
+        <td th:text="${item.role}"></td>
+        <td th:text="${item.passwordChanged} ? '是' : '否'"></td>
+        <td>
+            <form th:action="@{'/admin/accounts/delete/' + ${item.id}}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="link-button">删除</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${accounts.isEmpty()}">
+        <td colspan="4">暂无账号信息</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
